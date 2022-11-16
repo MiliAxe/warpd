@@ -86,7 +86,7 @@ struct input_event *normal_mode(struct input_event *start_ev, int oneshot)
 	platform.mouse_get_position(&scr, &mx, &my);
 	platform.screen_get_dimensions(scr, &sw, &sh);
 
-	platform.mouse_hide();
+//	platform.mouse_hide();
 	mouse_reset();
 	redraw(scr, mx, my, 0);
 
@@ -219,7 +219,7 @@ struct input_event *normal_mode(struct input_event *start_ev, int oneshot)
 
 exit:
 
-	platform.mouse_show();
+//	platform.mouse_show();
 	platform.screen_clear(scr);
 
 	platform.input_ungrab_keyboard();
