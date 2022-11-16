@@ -12,7 +12,8 @@ static void redraw(screen_t scr, int x, int y, int hide_cursor)
 	platform.screen_get_dimensions(scr, &sw, &sh);
 
 	const int gap = 10;
-	const int indicator_size = (config_get_int("indicator_size") * sh) / 1080;
+	const int indicator_size =
+	    (config_get_int("indicator_size") * sh) / 1080;
 	const char *indicator_color = config_get("indicator_color");
 	const char *curcol = config_get("cursor_color");
 	const char *indicator = config_get("indicator");
@@ -21,19 +22,24 @@ static void redraw(screen_t scr, int x, int y, int hide_cursor)
 	platform.screen_clear(scr);
 
 	if (!hide_cursor)
-		platform.screen_draw_box(scr, x+1, y-cursz/2,
-				cursz, cursz,
-				curcol);
-
+		platform.screen_draw_box(scr, x + 1, y - cursz / 2, cursz,
+					 cursz, curcol);
 
 	if (!strcmp(indicator, "bottomleft"))
-		platform.screen_draw_box(scr, gap, sh-indicator_size-gap, indicator_size, indicator_size, indicator_color);
+		platform.screen_draw_box(scr, gap, sh - indicator_size - gap,
+					 indicator_size, indicator_size,
+					 indicator_color);
 	else if (!strcmp(indicator, "topleft"))
-		platform.screen_draw_box(scr, gap, gap, indicator_size, indicator_size, indicator_color);
+		platform.screen_draw_box(scr, gap, gap, indicator_size,
+					 indicator_size, indicator_color);
 	else if (!strcmp(indicator, "topright"))
-		platform.screen_draw_box(scr, sw-indicator_size-gap, gap, indicator_size, indicator_size, indicator_color);
+		platform.screen_draw_box(scr, sw - indicator_size - gap, gap,
+					 indicator_size, indicator_size,
+					 indicator_color);
 	else if (!strcmp(indicator, "bottomright"))
-		platform.screen_draw_box(scr, sw-indicator_size-gap, sh-indicator_size-gap, indicator_size, indicator_size, indicator_color);
+		platform.screen_draw_box(
+		    scr, sw - indicator_size - gap, sh - indicator_size - gap,
+		    indicator_size, indicator_size, indicator_color);
 
 	platform.commit();
 }
@@ -50,43 +56,28 @@ struct input_event *normal_mode(struct input_event *start_ev, int oneshot)
 	screen_t scr;
 	int sh, sw;
 	int mx, my;
+	const int hide_visibility = config_get_int("hide_cursor");
 
 	const char *keys[] = {
-		"accelerator",
-		"bottom",
-		"buttons",
-		"copy_and_exit",
-		"decelerator",
-		"down",
-		"drag",
-		"end",
-		"exit",
-		"grid",
-		"hint",
-		"hint2",
-		"hist_back",
-		"hist_forward",
-		"history",
-		"left",
-		"middle",
-		"oneshot_buttons",
-		"print",
-		"right",
-		"screen",
-		"scroll_down",
-		"scroll_up",
-		"start",
-		"top",
-		"up",
+	    "accelerator",   "bottom",	     "buttons",
+	    "copy_and_exit", "decelerator",  "down",
+	    "drag",	     "end",	     "exit",
+	    "grid",	     "hint",	     "hint2",
+	    "hist_back",     "hist_forward", "history",
+	    "left",	     "middle",	     "oneshot_buttons",
+	    "print",	     "right",	     "screen",
+	    "scroll_down",   "scroll_up",    "start",
+	    "top",	     "up",
 	};
-
 
 	platform.input_grab_keyboard();
 
 	platform.mouse_get_position(&scr, &mx, &my);
 	platform.screen_get_dimensions(scr, &sw, &sh);
 
-//	platform.mouse_hide();
+	if (hide_visibility) {
+		platform.mouse_hide();
+	}
 	mouse_reset();
 	redraw(scr, mx, my, 0);
 
@@ -192,17 +183,21 @@ struct input_event *normal_mode(struct input_event *start_ev, int oneshot)
 				hist_add(mx, my);
 				histfile_add(mx, my);
 				platform.mouse_click(btn);
-			} else if ((btn = config_input_match(ev, "oneshot_buttons"))) {
+			} else if ((btn = config_input_match(
+					ev, "oneshot_buttons"))) {
 				hist_add(mx, my);
 				platform.mouse_click(btn);
 
-				const int timeout = config_get_int("oneshot_timeout");
+				const int timeout =
+				    config_get_int("oneshot_timeout");
 				int timeleft = timeout;
 
 				while (timeleft--) {
-					struct input_event *ev = platform.input_next_event(1);
-					if (ev && ev->pressed && 
-						config_input_match(ev, "oneshot_buttons")) {
+					struct input_event *ev =
+					    platform.input_next_event(1);
+					if (ev && ev->pressed &&
+					    config_input_match(
+						ev, "oneshot_buttons")) {
 						platform.mouse_click(btn);
 						timeleft = timeout;
 					}
@@ -219,7 +214,9 @@ struct input_event *normal_mode(struct input_event *start_ev, int oneshot)
 
 exit:
 
-//	platform.mouse_show();
+	if (hide_visibility) {
+		platform.mouse_show();
+	}
 	platform.screen_clear(scr);
 
 	platform.input_ungrab_keyboard();
