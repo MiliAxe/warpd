@@ -1,4 +1,4 @@
-# What
+# What is warpd? 🐁
 
 A modal keyboard driven interface for mouse manipulation.
 
@@ -138,6 +138,8 @@ launchctl unload /Library/LaunchAgents/com.warpd.warpd.plist
 3. Use the normal movement keys (default `hjkl`) to adjust the cursor.
 4. Press `m` to left click, `,` to middle click or `.` to right click.
 5. Press `escape` to quit.
+
+In order to use a square cursor instead of your system cursor, set the `virtual_cursor` option.
 
 A drag movement can be simulated from any of the above modes by focusing on the
 source and then pressing the `drag_key` (default `v`) which will cause normal
