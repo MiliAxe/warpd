@@ -47,7 +47,7 @@ static void redraw(screen_t scr, int x, int y, int hide_cursor)
 static void move(screen_t scr, int x, int y)
 {
 	platform.mouse_move(scr, x, y);
-	redraw(scr, x, y, 0);
+	redraw(scr, x, y, !config_get_int("virtual_cursor"));
 }
 
 struct input_event *normal_mode(struct input_event *start_ev, int oneshot)
@@ -56,7 +56,7 @@ struct input_event *normal_mode(struct input_event *start_ev, int oneshot)
 	screen_t scr;
 	int sh, sw;
 	int mx, my;
-	const int hide_visibility = config_get_int("hide_cursor");
+	const int virtual_cursor = config_get_int("virtual_cursor");
 
 	const char *keys[] = {
 	    "accelerator",   "bottom",	     "buttons",
@@ -75,11 +75,11 @@ struct input_event *normal_mode(struct input_event *start_ev, int oneshot)
 	platform.mouse_get_position(&scr, &mx, &my);
 	platform.screen_get_dimensions(scr, &sw, &sh);
 
-	if (hide_visibility) {
+	if (virtual_cursor) {
 		platform.mouse_hide();
 	}
 	mouse_reset();
-	redraw(scr, mx, my, 0);
+	redraw(scr, mx, my, !virtual_cursor);
 
 	while (1) {
 		const int cursz = config_get_int("cursor_size");
@@ -95,7 +95,7 @@ struct input_event *normal_mode(struct input_event *start_ev, int oneshot)
 		scroll_tick();
 		if (mouse_process_key(ev, "up", "down", "left", "right")) {
 			platform.mouse_get_position(&scr, &mx, &my);
-			redraw(scr, mx, my, 0);
+			redraw(scr, mx, my, !virtual_cursor);
 			continue;
 		}
 
@@ -214,7 +214,7 @@ struct input_event *normal_mode(struct input_event *start_ev, int oneshot)
 
 exit:
 
-	if (hide_visibility) {
+	if (virtual_cursor) {
 		platform.mouse_show();
 	}
 	platform.screen_clear(scr);

@@ -112,7 +112,7 @@ static struct {
 	{ "indicator", "none", "Specifies an optional visual indicator to be displayed while normal mode is active, must be one of: topright, topleft, bottomright, bottomleft, none", OPT_STRING },
 	{ "indicator_color", "#00ff00", "The color of the visual indicator color.", OPT_STRING },
 	{ "indicator_size", "12", "The size of the visual indicator in pixels.", OPT_INT },
-	{ "hide_cursor", "0", "Whether to use the box virtual cursor or not.", OPT_INT },
+	{ "virtual_cursor", "0", "Whether to use the rectangle cursor or not.", OPT_INT },
 };
 
 const char *config_get(const char *key)
